@@ -1,0 +1,17 @@
+body {
+	background-color: #eee;
+}
+
+canvas.painter {
+	background-color: #fff;
+}
+
+div.toolbox {
+	width: 512px;
+	height: 64px;
+	background-color: #ddd;
+}
+
+input.toolbox_slider {
+	width: 512px;
+}
