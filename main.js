@@ -1,5 +1,5 @@
 var painter = (function(){ // Namespace painter
-
+	
 	var container;
 	var canvas;
 	var context;
@@ -8,21 +8,22 @@ var painter = (function(){ // Namespace painter
 	var brush_size = 10;
 	var brush_color = "#000000"
 	var brush_opacity = 0.01;
+	var set_brush_color = function(c) { brush_color = c; }
 
 	bob_ross_colors = {
-		"sap green"        : "#0A3410",
-		"alizarin crimson" : "#4E1500",
-		"van dyke brown"   : "#221B15",
-		"dark sienna"      : "#5F2E1F",
-		"midnight black"   : "#000000",
-		"prussian blue"    : "#021E44",
-		"phthalo blue"     : "#0C0040",
-		"phthalo green"    : "#102E3C",
-		"cadmium yellow"   : "#FFEC00",
-		"yellow ochre"     : "#C79B00",
-		"indian yellow"    : "#FFB800",
-		"bright red"       : "#DB0000",
-		"titanium white"   : "#FFFFFF"
+		"Sap green"        : "#0A3410",
+		"Alizarin crimson" : "#4E1500",
+		"Van Dyke brown"   : "#221B15",
+		"Dark sienna"      : "#5F2E1F",
+		"Midnight black"   : "#000000",
+		"Prussian blue"    : "#021E44",
+		"Phthalo blue"     : "#0C0040",
+		"Phthalo green"    : "#102E3C",
+		"Cadmium yellow"   : "#FFEC00",
+		"Yellow ochre"     : "#C79B00",
+		"Indian yellow"    : "#FFB800",
+		"Bright red"       : "#DB0000",
+		"Titanium white"   : "#FFFFFF"
 	};
 	hex_values = ["0","1","2","3","4","5","6","7","8","9","A","B","C","D","E","F"];
 
@@ -33,15 +34,24 @@ var painter = (function(){ // Namespace painter
 		return ret;
 	}
 
+	function in_canvas(x, y) {return x>=0 && y>=0 && x < canvas.width && y<canvas.height;}
+
 	function paint(x,y){
-		if (x < 0) return;
-		if (y < 0) return;
-		if (x > canvas.width) return;
-		if (y > canvas.height) return;
-		context.fillStyle = brush_color + float_to_hex(brush_opacity);
+		if (!in_canvas(x,y)) return;
 		context.beginPath();
 		context.arc(x,y,brush_size/2,0,2*Math.PI,false);
 		context.fill();
+	}
+
+	function paint_from_to(xf,yf,xt,yt){
+		if (!in_canvas(xf,yf)) return;
+		if (!in_canvas(xt,yt)) return;
+
+		context.strokeStyle = brush_color + float_to_hex(brush_opacity);
+		context.beginPath();
+		context.moveTo(xf, yf);
+		context.lineTo(xt, yt);
+		context.stroke();
 	}
 
 	function get_path(from, to){
@@ -93,12 +103,18 @@ var painter = (function(){ // Namespace painter
 	function register_mouse_move(x,y){
 		if (!mouse_down) return;
 		mousepath.push([x,y]);
+
 		if (mousepath.length > 1){
 			p1 = mousepath[mousepath.length-2];
 			p2 = mousepath[mousepath.length-1];
 			path = get_path(p1,p2);
-			for (i in path)
-				paint(path[i][0], path[i][1]);
+			
+			for (i=1; i<path.length; ++i)
+				paint_from_to(path[i-1][0], path[i-1][1], path[i][0], path[i][1]);
+
+			if (false)
+				for (i in path)
+					paint(path[i][0], path[i][1]);
 		}
 	}
 	
@@ -114,11 +130,11 @@ var painter = (function(){ // Namespace painter
 			// Create the canvas for the painter
 			canvas = document.createElement("canvas");
 			canvas.className = "painter";
-			canvas.width = 512;
-			canvas.height = 512;
+			canvas.width = 800;
+			canvas.height = canvas.width;
 			context = canvas.getContext("2d");
-			context.fillStyle = "rgb("+255+","+255+","+255+")";
-			context.fillRect(0,0,512,512);
+			context.fillStyle = "rgba("+255+","+255+","+255+","+255+")";
+			context.fillRect(0,0,canvas.width,canvas.height);
 
 			document.body.onmousedown = function(event){
 				mousepath = [];
@@ -137,10 +153,12 @@ var painter = (function(){ // Namespace painter
 				{
 					// Sample color from canvas
 					id = context.getImageData(x,y,1,1).data;
-					brush_color = "#"+
+					console.log(id);
+					sampled_color = "#"+
 						float_to_hex(id[0]/255.0)+
 						float_to_hex(id[1]/255.0)+
-						float_to_hex(id[2]/255.0)
+						float_to_hex(id[2]/255.0);
+					set_brush_color(sampled_color);
 				}
 			}
 
@@ -176,6 +194,7 @@ var painter = (function(){ // Namespace painter
 			}
 
 			container.appendChild(canvas);
+			container.style.width = canvas.width;
 
 			// Create toolbox
 			toolbox = document.createElement("div");
@@ -185,15 +204,31 @@ var painter = (function(){ // Namespace painter
 			color_picker = document.createElement("div");
 			color_picker.className = "toolbox_color_picker";
 			toolbox.appendChild(color_picker);
+
+			color_indicator = document.createElement("input");
+			color_indicator.className = "color_indicator";
+			color_indicator.title = "Pick a color";
+			color_indicator.type = "color";
+			color_indicator.oninput = function(){
+				set_brush_color(color_indicator.value);
+			} 
+			color_picker.appendChild(color_indicator);
+
 			Object.keys(bob_ross_colors).forEach(function(key){
 				color_button = document.createElement("button");
 				color_button.className = "color_picker";
 				color_button.style.background = bob_ross_colors[key];
 				color_button.onclick = function() {
-					brush_color = bob_ross_colors[key];
+					set_brush_color(bob_ross_colors[key]);
 				}
 				color_picker.appendChild(color_button);
+
+				tooltip = document.createElement("span");
+				tooltip.className = "tooltip";
+				tooltip.innerHTML = key;
+				color_button.appendChild(tooltip);
 			});
+
 
 			brush_size_indicator = document.createElement("div");
 			brush_size_indicator.className = "toolbox_label";
@@ -239,6 +274,11 @@ var painter = (function(){ // Namespace painter
 
 			brush_opacity_slider.value = 100;
 			brush_opacity_slider.oninput();
+
+			set_brush_color = function(c){
+				brush_color = c;
+				color_indicator.value = brush_color;
+			}
 		}
 	}
 
