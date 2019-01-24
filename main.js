@@ -120,8 +120,10 @@ var painter = (function(){ // Namespace painter
 				dx = xt-xf;
 				dy = yt-yf;
 				dist += Math.sqrt(dx*dx+dy*dy);
-				dx = Math.sign(dx);
-				dy = Math.sign(dy);
+				if (dx > 0) dx = 1;
+				else if (dx < 0) dx = -1;
+				if (dy > 0) dy = 1;
+				else if (dy < 0) dy = -1;
 				bsamp = Math.sin(dist/br_sh_period);
 				dxt = dy*ns + bristle_shuffle*bsamp;
 				dyt = -dx*ns + bristle_shuffle*bsamp;
@@ -142,8 +144,6 @@ var painter = (function(){ // Namespace painter
 		path = [];
 		for (var i=Math.max(0, mousepath.length-brush_size); i<mousepath.length; ++i)
 			path.push(mousepath[i]);
-
-		console.log(col_max, col_trans);
 
 		start = path[0];
 		end = path[path.length-1];
@@ -219,8 +219,6 @@ var painter = (function(){ // Namespace painter
 		var bc = brush_color;
 		var col = "rgba("+bc[0]+","+bc[1]+","+bc[2]+","+opacity+")";
 		context.fillStyle = col;
-		console.log(col);
-		console.log(context.fillStyle);
 
 		for (var n=0; n<path.length; ++n)
 		{
@@ -293,7 +291,7 @@ var painter = (function(){ // Namespace painter
 			// Create the container for the painter
 			container = document.createElement("div");
 			container.className = "painter";
-			document.body.append(container);
+			document.body.appendChild(container);
 
 			// Create the canvas for the painter
 			canvas = document.createElement("canvas");
@@ -383,9 +381,19 @@ var painter = (function(){ // Namespace painter
 			color_indicator = document.createElement("input");
 			color_indicator.className = "color_indicator";
 			color_indicator.title = "Pick a color";
-			color_indicator.type = "color";
-			color_indicator.oninput = function(){set_brush_color(hex_to_rgba(color_indicator.value));} 
-			color_picker.appendChild(color_indicator);
+			try 
+			{
+				color_indicator.type = "color";
+				color_indicator.oninput = function()
+				{
+					set_brush_color(hex_to_rgba(color_indicator.value));
+				} 
+				color_picker.appendChild(color_indicator);
+			}
+			catch(err)
+			{
+				console.log("This browser doensn't support color inputs!");
+			}
 
 			Object.keys(bob_ross_colors).forEach(function(key){
 				color_button = document.createElement("button");
