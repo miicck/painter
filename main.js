@@ -26,6 +26,12 @@ var painter = (function(){ // Namespace painter
 		"Titanium white"   : [255, 255, 255, 1.0]
 	};
 
+	tips = [
+		"Press ctrl-z to undo",
+		"Right click to set brush color from a point on the canvas",
+		"Click on brush color indicator to bring up a color mixer."
+	];
+
 	brushes = {
 		"simple brush"     : paint_simple,
 		"fanbrush"         : paint_fanbrush,
@@ -133,10 +139,14 @@ var painter = (function(){ // Namespace painter
 		var col_trans = "rgba("+bc[0]+","+bc[1]+","+bc[2]+",0)";
 		context.lineWidth = brush_size;
 
+		path = [];
+		for (var i=Math.max(0, mousepath.length-brush_size); i<mousepath.length; ++i)
+			path.push(mousepath[i]);
+
 		console.log(col_max, col_trans);
 
-		start = mousepath[0];
-		end = mousepath[mousepath.length-1];
+		start = path[0];
+		end = path[path.length-1];
 
 		var grad = context.createLinearGradient(start[0],start[1],end[0],end[1]);
 		grad.addColorStop(0, col_max);
@@ -144,9 +154,9 @@ var painter = (function(){ // Namespace painter
 		context.strokeStyle = grad;
 
 		context.beginPath();
-		for (var i=0;i<mousepath.length; ++i)
+		for (var i=0;i<path.length; ++i)
 		{
-			p = mousepath[i];
+			p = path[i];
 			context.lineTo(p[0],p[1]);
 		}
 		context.stroke();
@@ -205,9 +215,12 @@ var painter = (function(){ // Namespace painter
 		path = get_path(mousepath[mousepath.length-2], mousepath[mousepath.length-1]);
 
 		opacity = Math.pow(brush_color[3],4);
+		if (opacity < 0.003) opacity = 0.003;
 		var bc = brush_color;
 		var col = "rgba("+bc[0]+","+bc[1]+","+bc[2]+","+opacity+")";
 		context.fillStyle = col;
+		console.log(col);
+		console.log(context.fillStyle);
 
 		for (var n=0; n<path.length; ++n)
 		{
@@ -453,7 +466,6 @@ var painter = (function(){ // Namespace painter
 			brush_opacity_slider.oninput();
 
 			set_brush_color = function(c){
-				console.log(c);
 				brush_color[0] = c[0]
 				brush_color[1] = c[1]
 				brush_color[2] = c[2]
