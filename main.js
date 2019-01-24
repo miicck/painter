@@ -8,6 +8,7 @@ var painter = (function(){ // Namespace painter
 	var brush_size = 10;
 	var brush_color = [0,0,0,0];
 	var set_brush_color = function(c) { brush_color = c; }
+	var undo_levels = []
 
 	bob_ross_colors = {
 		"Sap green"        : [10,  52,  16,  1.0],
@@ -240,6 +241,20 @@ var painter = (function(){ // Namespace painter
 			}
 	}
 
+	function save_undo_level()
+	{
+		id = context.getImageData(0,0,canvas.width,canvas.height).data;
+		undo_levels.push(id);
+	}
+
+	function restore_undo_level()
+	{
+		if (undo_levels.length == 0) return;
+		id = undo_levels[undo_levels.length-1];
+		undo_levels.pop();
+		context.putImageData(new ImageData(id,canvas.width, canvas.height), 0, 0);
+	}
+
 	function hex_to_rgba(hex) {
 	    var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
 	    return result ?
@@ -284,7 +299,10 @@ var painter = (function(){ // Namespace painter
 				y = event.clientY - rect.top;
 
 				if (event.button === 0)
+				{
 					mouse_down = true;
+					save_undo_level();
+				}
 
 				if (event.button === 2)
 				{
@@ -296,7 +314,9 @@ var painter = (function(){ // Namespace painter
 
 			document.body.onmouseup = function(event){
 				if (event.button === 0)
+				{
 					mouse_down = false;
+				}
 			}
 
 			document.body.onmousemove = function(event){
@@ -309,6 +329,14 @@ var painter = (function(){ // Namespace painter
 					mousepath = [];
 					mouse_down = false;
 				}
+			}
+
+			document.body.onkeydown = function(event){
+
+				// Undo
+				if (event.ctrlKey)
+					if (event.key == "z")
+						restore_undo_level();
 			}
 
 
