@@ -33,12 +33,16 @@ var painter = (function(){ // Namespace painter
 	];
 
 	brushes = {
-		"simple brush"     : paint_simple,
-		"fanbrush"         : paint_fanbrush,
-		"knife"            : paint_knife,
-		"spraycan"         : paint_spray
+		"simple brush" : paint_simple,
+		"fanbrush"     : paint_fanbrush,
+		"knife"        : paint_knife,
+		"spraycan"     : paint_spray
 	};
 	selected_brush = "simple brush";
+
+	brush_svgs = {
+		"simple brush" : '<circle cx="50" cy="50" r="40" fill="black">'
+	};
 
 	function float_to_hex(f){
 		const hex_values = ["0","1","2","3","4","5","6","7","8","9","A","B","C","D","E","F"];
@@ -417,7 +421,7 @@ var painter = (function(){ // Namespace painter
 			Object.keys(brushes).forEach(function(key){
 				brush_button = document.createElement("button");
 				brush_button.className = "brush_button";
-				brush_button.style.backgroundImage = "url('img/"+key+".png')";
+				brush_button.style.backgroundImage = "url('img/"+key+".svg')";
 				brush_button.style.backgroundSize = "32px 32px";
 				brush_selector.appendChild(brush_button);
 
