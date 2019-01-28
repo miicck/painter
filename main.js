@@ -9,6 +9,7 @@ var painter = (function(){ // Namespace painter
 	var brush_color = [0,0,0,0];
 	var set_brush_color = function(c) { brush_color = c; }
 	var undo_levels = []
+	var height_elements = []
 
 	bob_ross_colors = {
 		"Sap green"        : [10,  52,  16,  1.0],
@@ -284,7 +285,16 @@ var painter = (function(){ // Namespace painter
 	    return "#" + componentToHex(rgba[0]) + componentToHex(rgba[1]) + componentToHex(rgba[2]);
 	}
 
+	function get_height(){
+		ret = 0;
+		for (var i=0; i<height_elements.length; ++i)
+			ret += height_elements[i].clientHeight;
+		return ret;
+	}
+
 	return {
+
+		height : function() { return get_height(); },
 
 		create : function() {
 			
@@ -296,8 +306,10 @@ var painter = (function(){ // Namespace painter
 			// Create the canvas for the painter
 			canvas = document.createElement("canvas");
 			canvas.className = "painter";
-			canvas.width = 800;
+			canvas.height = Math.floor(window.innerHeight) - 128;
+			canvas.width = canvas.height;
 			canvas.height = canvas.width;
+			height_elements.push(canvas);
 			context = canvas.getContext("2d");
 			context.fillStyle = "rgba("+255+","+255+","+255+","+255+")";
 			context.fillRect(0,0,canvas.width,canvas.height);
@@ -372,6 +384,7 @@ var painter = (function(){ // Namespace painter
 			// Create toolbox
 			toolbox = document.createElement("div");
 			toolbox.className = "toolbox";
+			height_elements.push(toolbox);
 			container.appendChild(toolbox);
 
 			color_picker = document.createElement("div");
@@ -482,7 +495,27 @@ var painter = (function(){ // Namespace painter
 		}
 	}
 
-})() // End namespace painter
+})(); // End namespace painter
 
-// Create the painter
+var bob_ross = (function(){ // Namespace bob_ross
+
+	return {
+		
+		create : function() {
+			
+			container = document.createElement("div");
+			container.className = "video_container";
+			document.body.appendChild(container);
+
+			frame = document.createElement("iframe");
+			frame.src = "https://www.youtube.com/embed/lLWEXRAnQd0"
+			frame.className = "video";
+			frame.style.height = painter.height();
+			container.appendChild(frame);
+		}
+	}
+
+})(); // End namespace bob_ross
+
 painter.create();
+bob_ross.create();
