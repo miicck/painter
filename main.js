@@ -167,9 +167,10 @@ var painter = (function(){ // Namespace painter
 		context.stroke();
 	}
 	
-	function get_path(from, to){
+	function get_path(from, to)
+	{
 		// Returns a path linking two points
-		// on the canva sith a straight line
+		// on the canvas with a straight line
 		dx = to[0] - from[0];
 		dy = to[1] - from[1];
 
@@ -271,7 +272,8 @@ var painter = (function(){ // Namespace painter
 		context.putImageData(new ImageData(id,canvas.width, canvas.height), 0, 0);
 	}
 
-	function hex_to_rgba(hex) {
+	function hex_to_rgba(hex) 
+	{
 	    var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
 	    return result ?
 		 [parseInt(result[1], 16),
@@ -280,16 +282,19 @@ var painter = (function(){ // Namespace painter
 	          : null;
 	}
 	
-	function componentToHex(c) {
+	function componentToHex(c) 
+	{
 	    var hex = c.toString(16);
 	    return hex.length == 1 ? "0" + hex : hex;
 	}
 
-	function rgba_to_hex(rgba) {
+	function rgba_to_hex(rgba) 
+	{
 	    return "#" + componentToHex(rgba[0]) + componentToHex(rgba[1]) + componentToHex(rgba[2]);
 	}
 
-	function get_height(){
+	function get_height()
+	{
 		ret = 0;
 		for (var i=0; i<height_elements.length; ++i)
 			ret += height_elements[i].clientHeight;
@@ -445,6 +450,22 @@ var painter = (function(){ // Namespace painter
 				brush_button.appendChild(tooltip);
 			});
 
+			download_button = document.createElement("button");
+			download_button.className = "download";
+			download_button.style.backgroundImage = "url('img/download.svg')";
+			download_button.onclick = function() {
+			    var link = document.createElement('a');
+			    link.download = 'bob_ross.png';
+			    link.href = canvas.toDataURL()
+			    link.click();
+			    link.remove();
+			};
+			tooltip = document.createElement("span");
+			tooltip.className = "tooltip";
+			tooltip.innerHTML = "Download";
+			download_button.appendChild(tooltip);
+			brush_selector.appendChild(download_button);
+
 			brush_size_indicator = document.createElement("div");
 			brush_size_indicator.className = "toolbox_label";
 			toolbox.appendChild(brush_size_indicator);
@@ -503,6 +524,22 @@ var painter = (function(){ // Namespace painter
 
 var bob_ross = (function(){ // Namespace bob_ross
 
+	videos = [[
+		// Season 1
+		"https://www.youtube.com/embed/oh5p5f5_-7A?list=PLAEQD0ULngi69x_7JbQvSMprLRK_KSVLu",
+		"https://www.youtube.com/embed/RInDWhYceLU?list=PLAEQD0ULngi69x_7JbQvSMprLRK_KSVLu",
+		"https://www.youtube.com/embed/UOziR7PoVco",
+		"https://www.youtube.com/embed/0pwoixRikn4",
+		"https://www.youtube.com/embed/DFSIQNjKRfk",
+		"https://www.youtube.com/embed/loAzRUzx1wI",
+		"https://www.youtube.com/embed/sDdpc8uisD0",
+		"https://www.youtube.com/embed/kQlFwTOkYzg",
+		"https://www.youtube.com/embed/QxcS7p1VHyQ",
+		"https://www.youtube.com/embed/wDnLlywAL5I",
+		"https://www.youtube.com/embed/Q03YvknOVe0",
+	]];
+
+
 	return {
 		
 		create : function() {
@@ -512,7 +549,7 @@ var bob_ross = (function(){ // Namespace bob_ross
 			document.body.appendChild(container);
 
 			frame = document.createElement("iframe");
-			frame.src = "https://www.youtube.com/embed/lLWEXRAnQd0"
+			frame.src = videos[0][3];
 			frame.className = "video";
 			frame.style.height = painter.height();
 			container.appendChild(frame);
