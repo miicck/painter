@@ -457,7 +457,8 @@ var painter = (function(){ // Namespace painter
 			    var link = document.createElement('a');
 			    link.download = 'bob_ross.png';
 			    link.href = canvas.toDataURL()
-			    link.click();
+			    var event = new MouseEvent('click');
+			    link.dispatchEvent(event);
 			    link.remove();
 			};
 			tooltip = document.createElement("span");
