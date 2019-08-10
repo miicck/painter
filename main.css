@@ -63,7 +63,7 @@ input.color_indicator {
 	padding: 0;
 }
 
-button.download,
+button.file_tool,
 button.brush_button,
 button.color_picker {
 	padding: 0px;
@@ -76,7 +76,7 @@ button.color_picker {
 	margin: 2px;
 }
 
-button.download {
+button.file_tool {
 	float: right;
 }
 

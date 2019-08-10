@@ -34,16 +34,12 @@ var painter = (function(){ // Namespace painter
 	];
 
 	brushes = {
-		"simple brush" : paint_simple,
+		"simple_brush" : paint_simple,
 		"fanbrush"     : paint_fanbrush,
 		"knife"        : paint_knife,
 		"spraycan"     : paint_spray
 	};
-	selected_brush = "simple brush";
-
-	brush_svgs = {
-		"simple brush" : '<circle cx="50" cy="50" r="40" fill="black">'
-	};
+	selected_brush = "simple_brush";
 
 	function float_to_hex(f){
 		const hex_values = ["0","1","2","3","4","5","6","7","8","9","A","B","C","D","E","F"];
@@ -451,21 +447,41 @@ var painter = (function(){ // Namespace painter
 			});
 
 			download_button = document.createElement("button");
-			download_button.className = "download";
+			download_button.className = "file_tool";
 			download_button.style.backgroundImage = "url('img/download.svg')";
 			download_button.onclick = function() {
 			    var link = document.createElement('a');
 			    link.download = 'bob_ross.png';
-			    link.href = canvas.toDataURL()
+			    link.href = canvas.toDataURL();
 			    var event = new MouseEvent('click');
 			    link.dispatchEvent(event);
 			    link.remove();
 			};
+
 			tooltip = document.createElement("span");
 			tooltip.className = "tooltip";
 			tooltip.innerHTML = "Download";
 			download_button.appendChild(tooltip);
 			brush_selector.appendChild(download_button);
+
+			submit_button = document.createElement("button");
+			submit_button.className = "file_tool";
+			submit_button.style.backgroundImage = "url('img/submit.svg')";
+			sub_tooltip = document.createElement("span");
+			submit_button.onclick = function() {
+			    data = canvas.toDataURL();
+			    xhr = new XMLHttpRequest();
+			    xhr.open("POST", "http://localhost:8080/upload");
+			    xhr.send(data);
+			    submit_button.onclick = function() { }
+			    submit_button.style.backgroundImage = "url('img/underway.svg')";
+			    sub_tooltip.innerHTML = "Submission pending";
+			};
+
+			sub_tooltip.className = "tooltip";
+			sub_tooltip.innerHTML = "Submit";
+			submit_button.appendChild(sub_tooltip);
+			brush_selector.appendChild(submit_button);
 
 			brush_size_indicator = document.createElement("div");
 			brush_size_indicator.className = "toolbox_label";
