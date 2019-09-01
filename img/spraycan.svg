@@ -1,13 +1,85 @@
-<?xml version="1.0" encoding="utf-8"?>
-<svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="32px" height="32px">
-<circle cx="28" cy="16" r="2" fill="black"/>
-<circle cx="12" cy="15" r="2" fill="black"/>
-<circle cx="14" cy="17" r="2" fill="black"/>
-<circle cx="18" cy="8" r="2" fill="black"/>
-<circle cx="9" cy="13" r="2" fill="black"/>
-<circle cx="4" cy="21" r="2" fill="black"/>
-<circle cx="14" cy="26" r="2" fill="black"/>
-<circle cx="18" cy="20" r="2" fill="black"/>
-<circle cx="9" cy="15" r="2" fill="black"/>
-<circle cx="4" cy="17" r="2" fill="black"/>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="32"
+   height="32"
+   viewBox="0 0 8.4666665 8.4666669"
+   version="1.1"
+   id="svg4608"
+   inkscape:version="0.92.4 (f8dce91, 2019-08-02)"
+   sodipodi:docname="spraycan.svg">
+  <defs
+     id="defs4602" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="3.959798"
+     inkscape:cx="2.6978765"
+     inkscape:cy="24.191797"
+     inkscape:document-units="mm"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     units="px"
+     inkscape:window-width="960"
+     inkscape:window-height="1025"
+     inkscape:window-x="960"
+     inkscape:window-y="27"
+     inkscape:window-maximized="0">
+    <inkscape:grid
+       type="xygrid"
+       id="grid5300" />
+  </sodipodi:namedview>
+  <metadata
+     id="metadata4605">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(0,-288.53332)">
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.26458332px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 2.6458332,290.78701 -0.8031993,0.66145 2.6930803,0.0473 -0.6378348,-0.68515 z"
+       id="path5296"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="ccccc" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.26458332px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 2.6930802,289.86569 -0.047247,0.92132 1.2520462,0.0236 -0.023625,-0.92132 z"
+       id="path5298"
+       inkscape:connector-curvature="0" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.26458332px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 1.6588861,291.56539 -0.1140644,4.51328 3.1228484,0.046 0.051792,-4.52874"
+       id="path5302"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cccc" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.26458332px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 7.0398064,289.31054 -0.047247,2.82301 -3.1183033,-1.63005 0.011811,-0.36616 z"
+       id="path5304"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="ccccc" />
+  </g>
 </svg>

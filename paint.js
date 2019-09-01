@@ -11,6 +11,7 @@ var set_brush_color = function(c) { brush_color = c; }
 var undo_levels     = []
 var height_elements = []
 
+// Bob Ross's famous palette colors
 bob_ross_colors = {
     "Sap green"        : [10,  52,  16,  1.0],
     "Alizarin crimson" : [78,  21,  0,   1.0],
@@ -60,6 +61,15 @@ function paint()
 {
     var brush = brushes[selected_brush];
     brush();
+}
+
+function set_height_relative_to_width(elm, frac)
+{
+    // Set an elements height as a fraction of it's width
+    // Done after 10ms to allow the DOM tree to update.
+    setTimeout(()=>{
+        elm.style.height = (elm.offsetWidth * frac) + "px";
+    },10);
 }
 
 function paint_fanbrush()
@@ -408,39 +418,62 @@ return {
         color_picker.className = "toolbox_color_picker";
         toolbox.appendChild(color_picker);
 
-        color_indicator = document.createElement("input");
-        color_indicator.className = "color_indicator";
-        color_indicator.title = "Pick a color";
-        try 
-        {
-            // Attempt to create a color input element
-            color_indicator.type = "color";
-            color_indicator.oninput = function()
-            {
-                set_brush_color(hex_to_rgba(color_indicator.value));
-            } 
-            color_picker.appendChild(color_indicator);
-        }
-        catch(err)
-        {
-            console.log("This browser doensn't support color inputs!");
-        }
-
         // Add the bob ross colors to the palette
         Object.keys(bob_ross_colors).forEach(function(key)
         {
-            color_button = document.createElement("button");
+            var color_button = document.createElement("button");
             color_button.className = "color_picker";
             var col = bob_ross_colors[key];
             col[3] = brush_color[3];
             color_button.style.background = rgba_to_hex(col);
-            color_button.onclick = function() { set_brush_color(col); }
-            color_picker.appendChild(color_button);
+
+            color_selector = document.createElement("input");
+            color_selector.type = "color";
+            color_selector.className = "hidden";
 
             tooltip = document.createElement("span");
             tooltip.className = "tooltip";
             tooltip.innerHTML = key;
+
+            color_button.onclick = function() 
+            { 
+                // Left click selects color
+                col = this.style.background;
+                col = col.split("(")[1];
+                col = col.split(")")[0];
+
+                r = parseInt(col.split(",")[0]);
+                g = parseInt(col.split(",")[1]);
+                b = parseInt(col.split(",")[2]);
+
+                col = [r,g,b];
+                set_brush_color([r,g,b]);
+            }
+
+            color_button.oncontextmenu = function(ev)
+            {
+                // Right click opens color selector
+                ev.preventDefault();
+                color_selector = this.children[0];
+                color_selector.focus();
+                color_selector.value = rgba_to_hex(col);
+                color_selector.click();
+            }
+
+            color_selector.onchange = function()
+            {
+                // When the color assigned to this changes
+                color_button = this.parentElement;
+                col = hex_to_rgba(this.value);
+                color_button.style.background = "rgb("+col[0]+","+col[1]+","+col[2]+")";
+                color_button.children[1].innerHTML = color_button.style.background;
+                color_button.onclick();
+            }
+
+            color_button.appendChild(color_selector);
+            color_picker.appendChild(color_button);
             color_button.appendChild(tooltip);
+            set_height_relative_to_width(color_button, 1.0);
         });
 
         // Create the brush selector toolbox part
@@ -454,7 +487,6 @@ return {
             brush_button = document.createElement("button");
             brush_button.className = "brush_button";
             brush_button.style.backgroundImage = "url('img/"+key+".svg')";
-            brush_button.style.backgroundSize = "32px 32px";
             brush_selector.appendChild(brush_button);
 
             brush_button.onclick = function() { selected_brush = key; }
@@ -462,6 +494,8 @@ return {
             tooltip.className = "tooltip";
             tooltip.innerHTML = key;
             brush_button.appendChild(tooltip);
+
+            set_height_relative_to_width(brush_button, 1.0);
         });
 
         // Create the download button
@@ -484,6 +518,7 @@ return {
         };
 
         brush_selector.appendChild(download_button);
+        set_height_relative_to_width(download_button, 1.0);
 
         // Create the submit painting button
         submit_button = document.createElement("button");
@@ -530,18 +565,21 @@ return {
 
         submit_button.onclick = submit_func;
         brush_selector.appendChild(submit_button);
+        set_height_relative_to_width(submit_button, 1.0);
 
         // Create brush size indicator and slier
+        brush_size_tool = document.createElement("div");
+        brush_size_tool.className = "toolbox_brush_size";
         brush_size_indicator = document.createElement("div");
         brush_size_indicator.className = "toolbox_label";
-        toolbox.appendChild(brush_size_indicator);
+        brush_size_tool.appendChild(brush_size_indicator);
 
         brush_size_slider = document.createElement("input");
         brush_size_slider.className = "toolbox_slider";
         brush_size_slider.type = "range";
         brush_size_slider.min = 0;
         brush_size_slider.max = 1000;
-        toolbox.appendChild(brush_size_slider);
+        brush_size_tool.appendChild(brush_size_slider);
 
         brush_size_slider.oninput = function(event)
         {
@@ -556,18 +594,22 @@ return {
 
         brush_size_slider.value = 500;
         brush_size_slider.oninput();
+        toolbox.appendChild(brush_size_tool);
 
         // Create brush opacity indicator and slider
+        brush_opacity_tool = document.createElement("div");
+        brush_opacity_tool.className = "toolbox_opacity_selector";
         brush_opacity_indicator = document.createElement("div");
         brush_opacity_indicator.className = "toolbox_label";
-        toolbox.appendChild(brush_opacity_indicator);
+        brush_opacity_tool.appendChild(brush_opacity_indicator);
 
         brush_opacity_slider = document.createElement("input");
         brush_opacity_slider.className = "toolbox_slider";
         brush_opacity_slider.type = "range";
         brush_opacity_slider.min = 0;
         brush_opacity_slider.max = 1000;
-        toolbox.appendChild(brush_opacity_slider);
+        brush_opacity_tool.appendChild(brush_opacity_slider);
+        toolbox.appendChild(brush_opacity_tool);
 
         brush_opacity_slider.oninput = function(event)
         {
@@ -670,7 +712,9 @@ return {
         document.body.appendChild(container);
 
         frame = document.createElement("iframe");
-        frame.src = videos[0][0];
+        season  = Math.floor(Math.random()*videos.length);
+        episode = Math.floor(Math.random()*videos[season].length);
+        frame.src = videos[season][episode];
         frame.className = "video";
         frame.style.height = painter.height();
         container.appendChild(frame);

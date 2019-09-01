@@ -26,39 +26,42 @@ canvas.painter {
 
 div.toolbox {
 	width: 100%;
-	height: 128px;
 	background-color: black;
-	padding-top: 4px;
+    display: table;
+    display: table-row;
 }
 
 div.toolbox_label {
+    margin: 0px;
 	float: left;
-	width: 25%;
-	height: 24px;
-	padding-top: 8px;
+	width: 50%;
 	text-align: center;
 }
 
 input.toolbox_slider {
-	float: left;
-	height: 32px;
-	width: 25%;
-	margin: 0px;
-}
-
-div.toolbox_brush_selector,
-div.toolbox_color_picker {
 	margin: 0px;
 	float: left;
 	width: 50%;
-	height: 64px;
+}
+
+input.hidden {
+    position: absolute;
+    left: -10000px;
+}
+
+div.toolbox_brush_size,
+div.toolbox_opacity_selector,
+div.toolbox_brush_selector,
+div.toolbox_color_picker {
+	float: left;
+	margin: 0px;
+	width: 50%;
 }
 
 input.color_indicator {
 	float: left;
-	width: 64px;
-	height: 64px;
-	margin: 4px;
+	width: 19.9%;
+    max-width: 64px;
 	border: 0;
 	padding: 0;
 }
@@ -67,17 +70,17 @@ button.file_tool,
 button.brush_button,
 button.color_picker {
 	padding: 0px;
+    margin: 0px;
 	border: none;
-	float: left;
-	width: 32px;
-	height: 32px;
-	box-shadow: inset 0 0 16px black;
-	border-radius: 8px;
-	margin: 2px;
+	width: 10%;
+    max-width: 32px;
+    background-size: cover;
+    border: 2px solid black;
+    border-radius: 25%;
 }
 
 button.file_tool {
-	float: right;
+    float: right;
 }
 
 span.tooltip {
