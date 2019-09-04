@@ -6,6 +6,9 @@ PORT = 8080
 
 # The number of the last submission made
 last_sub = 0
+if not os.path.isdir("submissions"):
+    os.system("mkdir submissions")
+
 for f in os.listdir("submissions"):
 	num = int(f.split("_")[-1].split(".")[0])
 	if num > last_sub:
