@@ -38,7 +38,8 @@ brushes = {
     "simple_brush" : paint_simple,
     "fanbrush"     : paint_fanbrush,
     "knife"        : paint_knife,
-    "spraycan"     : paint_spray
+    "spraycan"     : paint_spray,
+    "custom_brush" : paint_custom,
 };
 
 selected_brush = "simple_brush";
@@ -53,6 +54,11 @@ function float_to_hex(f)
     v2 = Math.floor((f*15 - v1) * 15);
     ret = hex_values[v1] + hex_values[v2];
     return ret;
+}
+
+function color_to_string(c)
+{
+    return "rgba("+c[0]+","+c[1]+","+c[2]+","+c[3]+")";
 }
 
 function in_canvas(x, y) { return x>=0 && y>=0 && x < canvas.width && y<canvas.height; }
@@ -70,6 +76,21 @@ function set_height_relative_to_width(elm, frac)
     setTimeout(()=>{
         elm.style.height = (elm.offsetWidth * frac) + "px";
     },10);
+}
+
+custom_brush_code  = "var path  = mousepath;\n";
+custom_brush_code += "var start = Math.max(0, path.length-1);\n";
+custom_brush_code += "context.fillStyle = color_to_string(brush_color);\n";
+custom_brush_code += "for(var n=start; n<path.length; ++n) {\n";
+custom_brush_code += "    context.beginPath();\n";
+custom_brush_code += "    context.arc(path[n][0], path[n][1], brush_size/2, 0, 2*Math.PI);\n";
+custom_brush_code += "    context.fill();\n";
+custom_brush_code += "}\n";
+
+function paint_custom()
+{
+    console.log(custom_brush_code);
+    eval(custom_brush_code);
 }
 
 function paint_fanbrush()
@@ -496,6 +517,14 @@ return {
             brush_button.appendChild(tooltip);
 
             set_height_relative_to_width(brush_button, 1.0);
+
+            if  (key == "custom_brush") {
+                brush_button.oncontextmenu = function(event) {
+                    event.preventDefault();
+                    custom_brush_code = prompt("Please enter your custom brush code",
+                        custom_brush_code);
+                };
+            }
         });
 
         // Create the download button
@@ -627,9 +656,6 @@ return {
             brush_color[0] = c[0];
             brush_color[1] = c[1];
             brush_color[2] = c[2];
-
-            // Set the indicator color
-            color_indicator.value = rgba_to_hex(c);
         }
     }
 }
